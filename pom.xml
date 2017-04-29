@@ -1,12 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.luricos.bukkit</groupId>
-    <version>2</version>
+    <version>4</version>
     <artifactId>WormholeXTremeWormhole</artifactId>
     <packaging>jar</packaging>
     <name>WormholeXTremeWormhole</name>
     <properties>
        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bukkitVersion>1.11.2-R0.1-SNAPSHOT</bukkitVersion>
     </properties>
     <url>https://github.com/tcgm/Wormhole-X-Treme</url>
     <repositories>
@@ -14,10 +15,7 @@
             <id>luricos.de-repo</id>
             <url>http://repo.luricos.de/bukkit-plugins/</url>
         </repository>
-        <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public</url>
-        </repository>
+
         <repository>
             <id>pex-repo</id>
             <name>PermissionsEx Repository</name>
@@ -69,9 +67,14 @@
     </build>
     <dependencies>
         <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${bukkitVersion}</version>
+        </dependency>
+        <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.9-R0.1-SNAPSHOT</version>
+            <version>${bukkitVersion}</version>
         </dependency>
         <dependency>
             <groupId>ninja.leaping.permissionsex</groupId>
@@ -81,7 +84,7 @@
         <dependency>
             <groupId>de.luricos.bukkit</groupId>
             <artifactId>WormholeXTremeWorlds</artifactId>
-            <version>2</version>
+            <version>[0.508,)</version>
             <type>jar</type>
         </dependency>
     </dependencies>
