@@ -20,7 +20,6 @@
  */
 package de.luricos.bukkit.WormholeXTreme.Wormhole;
 
-import de.luricos.bukkit.WormholeXTreme.Worlds.handler.WorldHandler;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.bukkit.commands.*;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.config.ConfigManager;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.config.Configuration;
@@ -33,9 +32,7 @@ import de.luricos.bukkit.WormholeXTreme.Wormhole.model.StargateManager;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.permissions.PermissionBackend;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.permissions.PermissionManager;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.permissions.backends.BukkitSupport;
-import de.luricos.bukkit.WormholeXTreme.Wormhole.permissions.backends.PermissionsExSupport;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.player.WormholePlayerManager;
-import de.luricos.bukkit.WormholeXTreme.Wormhole.plugin.WormholeWorldsSupport;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.utils.DBUpdateUtil;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.utils.WXTLogger;
 import org.bukkit.Bukkit;
@@ -59,15 +56,11 @@ public class WormholeXTreme extends JavaPlugin {
     private static final WormholeXTremeBlockListener blockListener = new WormholeXTremeBlockListener();
     private static final WormholeXTremeVehicleListener vehicleListener = new WormholeXTremeVehicleListener();
     private static final WormholeXTremeEntityListener entityListener = new WormholeXTremeEntityListener();
-    private static final WormholeXTremeServerListener serverListener = new WormholeXTremeServerListener();
     private static final WormholeXTremeRedstoneListener redstoneListener = new WormholeXTremeRedstoneListener();
 
     protected PermissionManager permissionManager;
     protected ConfigManager configManager;
 
-    /** The wormhole x treme worlds. */
-    private static WorldHandler worldHandler = null;
-    
     /** The Scheduler. */
     private static BukkitScheduler scheduler = null;
 
@@ -137,9 +130,6 @@ public class WormholeXTreme extends JavaPlugin {
         // clear wormholePlayers
         WormholePlayerManager.unregisterAllPlayers();
         
-        // disconnect from Worlds
-        WormholeWorldsSupport.disableWormholeWorlds();
-        
         // load config
         ConfigManager.setupConfigs(this.getDescription());
         
@@ -157,9 +147,6 @@ public class WormholeXTreme extends JavaPlugin {
 
         // reload permission backend
         this.permissionManager.reset();
-
-        // enable support if configured
-        WormholeWorldsSupport.enableWormholeWorlds(true);
         
         // register all players
         WormholePlayerManager.registerAllOnlinePlayers();
@@ -188,7 +175,6 @@ public class WormholeXTreme extends JavaPlugin {
 
         try {
             // register Permission backends
-            PermissionBackend.registerBackendAlias("pex", PermissionsExSupport.class);
             PermissionBackend.registerBackendAlias("bukkit", BukkitSupport.class);
 
             // resolve currently used PermissionPlugin
@@ -199,9 +185,6 @@ public class WormholeXTreme extends JavaPlugin {
                 this.permissionManager = new PermissionManager(this.configManager);
             }
 
-            if (ConfigManager.isWormholeWorldsSupportEnabled()) {
-                WormholeWorldsSupport.enableWormholeWorlds();
-            }
         } catch (final Exception e) {
             // @TODO change this behavior to be more error friendly (skip gate instead)
             // Catched when a world is not loaded but a gate is in that world.
@@ -330,15 +313,6 @@ public class WormholeXTreme extends JavaPlugin {
     }
 
     /**
-     * Gets the wormhole x treme worlds.
-     * 
-     * @return the wormhole x treme worlds
-     */
-    public static WorldHandler getWorldHandler() {
-        return worldHandler;
-    }
-
-    /**
      * Register commands.
      */
     public static void registerCommands() {
@@ -365,7 +339,6 @@ public class WormholeXTreme extends JavaPlugin {
         WormholeXTreme wxt = getThisPlugin();
         if (critical) {
             // Listen for enable/disable events (MONITOR)
-            Bukkit.getServer().getPluginManager().registerEvents(serverListener, wxt);
         } else {
             // Listen on Block events (NORMAL)
             Bukkit.getServer().getPluginManager().registerEvents(blockListener, wxt);
@@ -395,15 +368,6 @@ public class WormholeXTreme extends JavaPlugin {
         WormholeXTreme.scheduler = scheduler;
     }
 
-    /**
-     * Sets the wormhole x treme worlds.
-     * 
-     * @param worldHandler
-     *            the new wormhole x treme worlds
-     */
-    public static void setWorldHandler(WorldHandler worldHandler) {
-        WormholeXTreme.worldHandler = worldHandler;
-    }
 
     public static boolean isPluginAvailable() {
         Plugin plugin = getThisPlugin();
