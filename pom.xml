@@ -7,7 +7,7 @@
     <name>WormholeXTremeWormhole</name>
     <properties>
        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkitVersion>1.11.2-R0.1-SNAPSHOT</bukkitVersion>
+        <bukkitVersion>1.12-R0.1-SNAPSHOT</bukkitVersion>
     </properties>
     <url>https://github.com/tcgm/Wormhole-X-Treme</url>
     <repositories>
