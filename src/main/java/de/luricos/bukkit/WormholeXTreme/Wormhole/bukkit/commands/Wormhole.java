@@ -236,8 +236,8 @@ public class Wormhole implements CommandExecutor {
      */
     private static boolean doIrisMaterial(final CommandSender sender, final String[] args) {
         if (!((args.length == 3) || (args.length == 2))){
-            sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Syntax: /wormhole irismaterial [stargate] <material>");
-            sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Valid materials are: STONE, DIAMOND_BLOCK, GLASS, IRON_BLOCK, BEDROCK, and LAPIS_BLOCK");
+            sender.sendMessage(ConfigManager.MessageStrings.errorHeader + "Syntax: /wormhole irismaterial [stargate] <material>");
+            sender.sendMessage(ConfigManager.MessageStrings.errorHeader + "Valid materials are: STONE, DIAMOND_BLOCK, GLASS, IRON_BLOCK, BEDROCK, and LAPIS_BLOCK");
             return true;
         }
 
@@ -279,8 +279,8 @@ public class Wormhole implements CommandExecutor {
 
     private static boolean doLightMaterial(final CommandSender sender, final String[] args) {
         if(!((args.length == 3) || (args.length == 2))) {
-            sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Syntax: /wormhole lightmaterial [stargate] <material>");
-            sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Valid materials are: GLOWSTONE, GLOWING_REDSTONE_ORE");
+            sender.sendMessage(ConfigManager.MessageStrings.errorHeader + "Syntax: /wormhole lightmaterial [stargate] <material>");
+            sender.sendMessage(ConfigManager.MessageStrings.errorHeader + "Valid materials are: GLOWSTONE, GLOWING_REDSTONE_ORE");
             return true;
         }
 
@@ -295,12 +295,12 @@ public class Wormhole implements CommandExecutor {
                         WXTLogger.prettyLog(Level.FINE, false, "Caught Exception on light material" + e.getMessage());
                     }
 
-                    if ((m != null) && ((m == Material.GLOWSTONE) || (m == Material.GLOWING_REDSTONE_ORE))) {
+                    if (((m == Material.GLOWSTONE) || (m == Material.LEGACY_GLOWING_REDSTONE_ORE))) {
                         stargate.setGateCustomLightMaterial(m);
-                        sender.sendMessage(ConfigManager.MessageStrings.normalHeader.toString() + args[1] + " light material set to: " + stargate.getGateCustomLightMaterial());
+                        sender.sendMessage(ConfigManager.MessageStrings.normalHeader + args[1] + " light material set to: " + stargate.getGateCustomLightMaterial());
                     } else {
-                        sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Invalid Light Material: " + args[2]);
-                        sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Valid materials are: GLOWSTONE, GLOWING_REDSTONE_ORE");
+                        sender.sendMessage(ConfigManager.MessageStrings.errorHeader + "Invalid Light Material: " + args[2]);
+                        sender.sendMessage(ConfigManager.MessageStrings.errorHeader + "Valid materials are: GLOWSTONE, GLOWING_REDSTONE_ORE");
                     }
                 } else {
                     sender.sendMessage(ConfigManager.MessageStrings.normalHeader.toString() + args[1] + " light material is currently: " + stargate.getGateCustomLightMaterial());
@@ -390,26 +390,21 @@ public class Wormhole implements CommandExecutor {
 
         final Stargate stargate = StargateManager.getStargate(args[1]);
         if (stargate.isGateCustom()) {
-            if (args.length == 3) {
-                Material m = null;
-                try {
-                    m = Material.valueOf(args[2].trim().toUpperCase());
-                } catch (final Exception e) {
-                    WXTLogger.prettyLog(Level.FINE, false, "Caught Exception on portal material" + e.getMessage());
-                }
+            Material m = null;
+            try {
+                m = Material.valueOf(args[2].trim().toUpperCase());
+            } catch (final Exception e) {
+                WXTLogger.prettyLog(Level.FINE, false, "Caught Exception on portal material" + e.getMessage());
+            }
 
-                if ((m != null) && ((m == Material.STATIONARY_LAVA) || (m == Material.STATIONARY_WATER) || (m == Material.AIR) || (m == Material.PORTAL))) {
-                    stargate.setGateCustomPortalMaterial(m);
-                    sender.sendMessage(ConfigManager.MessageStrings.normalHeader.toString() + gateName + " portal material set to: " + stargate.getGateCustomPortalMaterial());
+            if (((m == Material.LAVA) || (m == Material.WATER) || (m == Material.AIR) || (m == Material.NETHER_PORTAL))) {
+                stargate.setGateCustomPortalMaterial(m);
+                sender.sendMessage(ConfigManager.MessageStrings.normalHeader.toString() + gateName + " portal material set to: " + stargate.getGateCustomPortalMaterial());
 
-                    StargateDBManager.stargateToSQL(stargate);
-                } else {
-                    sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Invalid Portal Material: " + gateMaterial);
-                    sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Valid materials are: STATIONARY_WATER, STATIONARY_LAVA, AIR, PORTAL");
-                }
+                StargateDBManager.stargateToSQL(stargate);
             } else {
-                sender.sendMessage(ConfigManager.MessageStrings.normalHeader.toString() + gateName + " portal material is currently: " + stargate.getGateCustomPortalMaterial());
-                sender.sendMessage(ConfigManager.MessageStrings.normalHeader.toString() + "Valid materials are: STATIONARY_WATER, STATIONARY_LAVA, AIR, PORTAL");
+                sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Invalid Portal Material: " + gateMaterial);
+                sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Valid materials are: STATIONARY_WATER, STATIONARY_LAVA, AIR, PORTAL");
             }
         } else {
             sender.sendMessage(ConfigManager.MessageStrings.errorHeader.toString() + "Stargate is not in custom mode. Set it with the '/wormhole custom' command");

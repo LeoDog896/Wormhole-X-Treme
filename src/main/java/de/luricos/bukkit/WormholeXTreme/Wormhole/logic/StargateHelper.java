@@ -63,6 +63,10 @@ public class StargateHelper {
     /** The Empty block. */
     private static final byte[] emptyBlock = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+    public static boolean isWallSign(final Material material) {
+        return material.toString().contains("wall_sign");
+    }
+
     /**
      * * This method takes in a button/lever and a facing and returns a completed stargate.
      * If the gate does not match the format for a gate it returns null.
@@ -236,7 +240,7 @@ public class StargateHelper {
             // First go forward one
             Block bLoc = teleBlock.getRelative(facing);
             // Now go up until we hit air or water.
-            while ((bLoc.getTypeId() != 0) && (bLoc.getTypeId() != 8)) {
+            while ((bLoc.getType() != Material.AIR) && (bLoc.getType() != Material.WATER)) {
                 bLoc = bLoc.getRelative(BlockFace.UP);
             }
             final Location teleLoc = bLoc.getLocation();
@@ -255,7 +259,7 @@ public class StargateHelper {
                     bVect[2] * directionVector[2] * -1};
 
                 final Block maybeBlock = w.getBlockAt(blockLocation[0] + startingPosition[0], blockLocation[1] + startingPosition[1], blockLocation[2] + startingPosition[2]);
-                if (maybeBlock.getTypeId() == 0) {
+                if (maybeBlock.getType() == Material.AIR) {
                     tempGate.getGatePortalBlocks().add(maybeBlock.getLocation());
                 } else {
                     if (tempGate.getGateNetwork() != null) {
@@ -425,7 +429,7 @@ public class StargateHelper {
                 maybeBlock.setType(Material.AIR);
             }
 
-            if (maybeBlock.getTypeId() == 0) {
+            if (maybeBlock.getType() == Material.AIR) {
                 tempGate.getGatePortalBlocks().add(maybeBlock.getLocation());
             } else {
                 return false;
@@ -439,7 +443,7 @@ public class StargateHelper {
             // First go forward one
             // Block bLoc = teleBlock.getRelative(tempGate.getGateFacing());
             // Now go up until we hit air or water.
-            while ((teleBlock.getTypeId() != 0) && (teleBlock.getTypeId() != 8)) {
+            while ((teleBlock.getType() != Material.AIR) && (teleBlock.getType() != Material.WATER)) {
                 teleBlock = teleBlock.getRelative(BlockFace.UP);
             }
             final Location teleLoc = teleBlock.getLocation();

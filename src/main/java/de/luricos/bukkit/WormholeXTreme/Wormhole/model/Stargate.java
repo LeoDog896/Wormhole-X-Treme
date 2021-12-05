@@ -23,6 +23,7 @@ package de.luricos.bukkit.WormholeXTreme.Wormhole.model;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.WormholeXTreme;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.config.ConfigManager;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.exceptions.WormholeDialSignException;
+import de.luricos.bukkit.WormholeXTreme.Wormhole.logic.StargateHelper;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.logic.StargateUpdateRunnable;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.logic.StargateUpdateRunnable.ActionToTake;
 import de.luricos.bukkit.WormholeXTreme.Wormhole.player.WormholePlayer;
@@ -36,6 +37,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 
@@ -189,7 +191,7 @@ public class Stargate {
                 ? getGateCustomPortalMaterial()
                 : getGateShape() != null
                 ? getGateShape().getShapePortalMaterial()
-                : Material.STATIONARY_WATER;
+                : Material.WATER;
         final int wooshDepth = isGateCustom()
                 ? getGateCustomWooshDepth()
                 : getGateShape() != null
@@ -1120,7 +1122,7 @@ public class Stargate {
      */
     public void resetTeleportSign() {
         if ((getGateDialSignBlock() != null) && (getGateDialSign() != null)) {
-            getGateDialSignBlock().setTypeId(0);
+            getGateDialSignBlock().setType(Material.AIR);
             WormholeXTreme.getScheduler().scheduleSyncDelayedTask(WormholeXTreme.getThisPlugin(), new StargateUpdateRunnable(this, ActionToTake.DIAL_SIGN_RESET), 2);
         }
     }
@@ -1658,7 +1660,7 @@ public class Stargate {
                 ? getGateCustomPortalMaterial()
                 : getGateShape() != null
                 ? getGateShape().getShapePortalMaterial()
-                : Material.STATIONARY_WATER
+                : Material.WATER
                 : Material.AIR);
         if ((getGateIrisLeverBlock() != null) && (getGateIrisLeverBlock().getType() == Material.LEVER)) {
             getGateIrisLeverBlock().setData(WorldUtils.getLeverToggleByte(getGateIrisLeverBlock().getData(), isGateIrisActive()));
@@ -1701,9 +1703,9 @@ public class Stargate {
 
             } else {
                 final Block nameSign = getGateNameBlockHolder().getRelative(getGateFacing());
-                if (nameSign.getType().equals(Material.WALL_SIGN)) {
+                if (StargateHelper.isWallSign(nameSign.getType())) {
                     getGateStructureBlocks().remove(nameSign.getLocation());
-                    nameSign.setTypeId(0);
+                    nameSign.setType(Material.AIR);
                 }
             }
         }
@@ -1780,7 +1782,7 @@ public class Stargate {
             } else {
                 if (getGateRedstoneGateActivatedBlock().getType().equals(Material.LEVER)) {
                     getGateStructureBlocks().remove(getGateRedstoneGateActivatedBlock().getLocation());
-                    getGateRedstoneGateActivatedBlock().setTypeId(0);
+                    getGateRedstoneGateActivatedBlock().setType(Material.AIR);
                 }
             }
         }
@@ -1800,7 +1802,7 @@ public class Stargate {
             } else {
                 if (getGateRedstoneGateActivatedBlock().getType() == Material.REDSTONE_WIRE) {
                     getGateStructureBlocks().remove(getGateRedstoneSignActivationBlock().getLocation());
-                    getGateRedstoneSignActivationBlock().setTypeId(0);
+                    getGateRedstoneSignActivationBlock().setType(Material.AIR);
                 }
             }
         }
@@ -1948,7 +1950,7 @@ public class Stargate {
                     setGateDialSign((Sign) getGateDialSignBlock().getState());
 
                 // though it may still happen that the block is changed to something else than a sign
-                if (!(getGateDialSign().getType().equals(Material.WALL_SIGN)))
+                if (!(StargateHelper.isWallSign(getGateDialSign().getType())))
                     throw new WormholeDialSignException("Expected WALL_SIGN. Found '" + getGateDialSign().getType().name() + "' for gate '" + getGateName() + "' in world '" + getWorld().getName() + "'.");
             } catch (ClassCastException e) {
                 throw new WormholeDialSignException("Could not set DialSign for gate '" + getGateName() + "' in world '" + getWorld().getName() + "'. Cast State to Sign failed for BlockType '" + getGateDialSignBlock().getType().name() + "'");
@@ -2101,16 +2103,16 @@ public class Stargate {
                 material = getGateDialLeverBlock().getType();
             }
             
-            final byte leverState = getGateDialLeverBlock().getData();
+            final BlockData leverState = getGateDialLeverBlock().getBlockData();
             switch (material) {
                 case STONE_BUTTON:
                     getGateDialLeverBlock().setType(Material.LEVER);
-                    getGateDialLeverBlock().setData(leverState);
+                    getGateDialLeverBlock().setBlockData(leverState);
                     WXTLogger.prettyLog(Level.FINE, false, "Automaticially replaced Button on gate \"" + getGateName() + "\" with Lever.");
-                    getGateDialLeverBlock().setData(WorldUtils.getLeverToggleByte(leverState, isGateActive()));
+                    getGateDialLeverBlock().setBlockData(WorldUtils.getLeverToggleByte(leverState, isGateActive()));
                     break;
                 case LEVER:
-                    getGateDialLeverBlock().setData(WorldUtils.getLeverToggleByte(leverState, isGateActive()));
+                    getGateDialLeverBlock().setBlockData(WorldUtils.getLeverToggleByte(leverState, isGateActive()));
                     break;
                 default:
                     break;
@@ -2164,7 +2166,7 @@ public class Stargate {
     
     public boolean tryClickTeleportSign(Block clickedBlock, Action eventAction, String triggeredByPlayer) {
         if ((getGateDialSign() == null) && (getGateDialSignBlock() != null)) {
-            if (getGateDialSignBlock().getType().equals(Material.WALL_SIGN)) {
+            if (StargateHelper.isWallSign(getGateDialSignBlock().getType())) {
                 setGateDialSignIndex(-1);
 
                 //@TODO can be removed after long term test, only nuke sign on load

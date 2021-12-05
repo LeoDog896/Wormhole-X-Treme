@@ -65,10 +65,10 @@ public class WormholeXTremeVehicleListener implements Listener {
         final Location l = event.getTo();
         final Block ch = l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ());
         final Stargate st = StargateManager.getGateFromBlock(ch);
-        if ((st != null) && st.isGateActive() && (st.getGateTarget() != null) && (ch.getTypeId() == (st.isGateCustom()
-                ? st.getGateCustomPortalMaterial().getId()
+        if ((st != null) && st.isGateActive() && (st.getGateTarget() != null) && (ch.getType() == (st.isGateCustom()
+                ? st.getGateCustomPortalMaterial()
                 : st.getGateShape() != null
-                ? st.getGateShape().getShapePortalMaterial().getId()
+                ? st.getGateShape().getShapePortalMaterial()
                 : 9))) {
             String gatenetwork;
             if (st.getGateNetwork() != null) {

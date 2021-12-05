@@ -331,7 +331,7 @@ public class WormholeXTremePlayerListener implements Listener {
             if (buttonLeverHit(player, clickedBlock, null)) {
                 return true;
             }
-        } else if ((clickedBlock != null) && (clickedBlock.getType().equals(Material.WALL_SIGN))) {
+        } else if ((clickedBlock != null) && (StargateHelper.isWallSign(clickedBlock.getType()))) {
             //@TODO refactor permission levels to be able to check for permissions first
             Stargate stargate = StargateManager.getGateFromBlock(clickedBlock);
             if (stargate != null) {
@@ -371,11 +371,11 @@ public class WormholeXTremePlayerListener implements Listener {
 
         Stargate stargate = StargateManager.getGateFromBlock(gateBlockFinal);
 
-        if ((stargate != null) && (stargate.isGateActive()) && (stargate.getGateTarget() != null) && (gateBlockFinal.getTypeId() == (stargate.isGateCustom()
-                ? stargate.getGateCustomPortalMaterial().getId()
+        if ((stargate != null) && (stargate.isGateActive()) && (stargate.getGateTarget() != null) && (gateBlockFinal.getType() == (stargate.isGateCustom()
+                ? stargate.getGateCustomPortalMaterial()
                 : stargate.getGateShape() != null
-                ? stargate.getGateShape().getShapePortalMaterial().getId()
-                : Material.STATIONARY_WATER.getId())) 
+                ? stargate.getGateShape().getShapePortalMaterial()
+                : Material.WATER))
                 && (!WormholePlayerManager.getRegisteredWormholePlayer(player).getProperties(stargate).hasUsedStargate())) {
 
             WormholePlayer wormholePlayer = WormholePlayerManager.getRegisteredWormholePlayer(player);

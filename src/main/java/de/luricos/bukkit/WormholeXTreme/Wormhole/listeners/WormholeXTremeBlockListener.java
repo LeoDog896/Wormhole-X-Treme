@@ -69,10 +69,10 @@ public class WormholeXTremeBlockListener implements Listener {
                     player.sendMessage("Destroyed DHD Sign. You will be unable to change dialing target from this gate.");
                     player.sendMessage("You can rebuild it later.");
                     stargate.setGateDialSign(null);
-                } else if (block.getTypeId() == (stargate.isGateCustom()
-                        ? stargate.getGateCustomIrisMaterial().getId()
+                } else if (block.getType() == (stargate.isGateCustom()
+                        ? stargate.getGateCustomIrisMaterial()
                         : stargate.getGateShape() != null
-                        ? stargate.getGateShape().getShapeIrisMaterial().getId()
+                        ? stargate.getGateShape().getShapeIrisMaterial()
                         : 1)) {
                     return true;
                 } else {
@@ -138,7 +138,7 @@ public class WormholeXTremeBlockListener implements Listener {
                     ? closest.getGateCustomPortalMaterial()
                     : closest.getGateShape() != null
                     ? closest.getGateShape().getShapePortalMaterial()
-                    : Material.STATIONARY_WATER) == Material.STATIONARY_LAVA)) {
+                    : Material.WATER) == Material.LAVA)) {
                 final double blockDistanceSquared = StargateManager.distanceSquaredToClosestGateBlock(current, closest);
                 if (((blockDistanceSquared <= (closest.isGateCustom()
                         ? closest.getGateCustomWooshDepthSquared()
@@ -195,7 +195,7 @@ public class WormholeXTremeBlockListener implements Listener {
                     ? closest.getGateCustomPortalMaterial()
                     : closest.getGateShape() != null
                     ? closest.getGateShape().getShapePortalMaterial()
-                    : Material.STATIONARY_WATER) == Material.STATIONARY_LAVA)) {
+                    : Material.WATER) == Material.LAVA)) {
                 final double blockDistanceSquared = StargateManager.distanceSquaredToClosestGateBlock(current, closest);
                 if (((blockDistanceSquared <= (closest.isGateCustom()
                         ? closest.getGateCustomWooshDepthSquared()
